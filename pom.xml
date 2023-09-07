@@ -19,6 +19,7 @@
         <gson.version>2.10.1</gson.version>
         <jackson.version>2.15.2</jackson.version>
         <logback.version>1.2.6</logback.version>
+        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -71,6 +72,18 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.cmc.port.PortApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>
