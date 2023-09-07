@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional // to make sure nothing will be saved into the database if an error occurs while parsing the file
 public class PortServiceImpl implements PortService {
     private final PortRepository portRepository;
     public static final int BATCH_SIZE = 1000;
@@ -44,8 +46,9 @@ public class PortServiceImpl implements PortService {
                     currentObjectName = jsonParser.getCurrentName();
                 } else if (jsonParser.currentToken() == JsonToken.START_OBJECT && currentObjectName != null) {
                     Port port = objectMapper.readValue(jsonParser, Port.class);
-
                     portBatch.add(port);
+
+                    // Save the batch into the database when the batch size is reached
                     if (portBatch.size() / BATCH_SIZE == 0) {
                         portRepository.saveAll(portBatch);
                         portBatch.clear();
